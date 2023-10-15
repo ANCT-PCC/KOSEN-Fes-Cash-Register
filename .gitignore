@@ -1,0 +1,7 @@
+.venv
+.vscode
+*.dSYM
+*.exe
+node_modules
+.DS_Store
+sample-*
