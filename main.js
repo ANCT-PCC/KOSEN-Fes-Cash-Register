@@ -50,6 +50,10 @@ const iteminfo = [
 
     total_price = document.getElementById('total');
     total_price.value = '0';
+    send_data_status = document.getElementById('send_data_status');
+    send_data_status.style.visibility = "hidden";
+    send_data_status_error = document.getElementById('send_data_status_error');
+    send_data_status_error.style.visibility = "hidden";
 
     //ボタンの定義
     $button[0].textContent = '決済する(csvに記録)';
@@ -115,7 +119,16 @@ const iteminfo = [
         data:JSON.stringify(origin_data), //ここで辞書型からJSONに変換
         dataType: 'json',
         contentType: 'application/json'
-      })
+      }).always(function (jqXHR) {
+        console.log(jqXHR.status);
+        if(String(jqXHR.status) === "200"){
+          send_data_status.textContent = "CSVの記録に成功しました\nHTTP Status: "+jqXHR.status;
+          send_data_status.style.visibility = "visible";
+        }else{
+          send_data_status_error.textContent = "記録中になんらかのエラーが発生しました。\nHTTP Status: "+jqXHR.status;
+          send_data_status_error.style.visibility = "visible";
+        }
+    });
   };
   
   init();

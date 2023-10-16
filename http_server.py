@@ -6,8 +6,9 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 
 CSV_FILE_NAME = "sales_data.csv"
 
-def write_csv(filepointer,data):
-    filepointer.write(data)
+def write_csv(filepointer,data,amount):
+    if(amount!="0"):
+        filepointer.write(data)
 
 @app.route('/')
 def index():
@@ -26,14 +27,14 @@ def csv():
         if(isfile_res == False):
             with open(CSV_FILE_NAME,"w",encoding="UTF-8") as fp_unko:
                 fp_unko.write('商品名,個数,小計'+"\n")
-                write_csv(fp_unko,f"{item_name},{item_amount},{item_subtotal}"+"\n")
+                write_csv(fp_unko,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
         
         if(isfile_res == True):
             with open(CSV_FILE_NAME,"a") as fp:
-                write_csv(fp,f"{item_name},{item_amount},{item_subtotal}"+"\n")
+                write_csv(fp,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
 
 
-    return app.send_static_file('main.html')
+    return "OK"
 
 @app.route('/test',methods=['POST'])
 def test():
