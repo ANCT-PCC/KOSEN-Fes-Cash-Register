@@ -32,6 +32,8 @@ const iteminfo = [
   //各種ボタン
   const $button = document.querySelectorAll('.btn');
 
+  var init_count = 0;
+
   const init = () => {
     for(flag = 0;flag<4;flag++){
       var identify = flag+1;
@@ -59,17 +61,22 @@ const iteminfo = [
     $button[0].textContent = '決済する(csvに記録)';
     $button[1].textContent = '入力を反映';
     $button[2].textContent = '次の会計へ(入力リセット)';
-    $button[0].addEventListener('click',(e) => {
-      confirm_total();
-      //ここに決済関数を
-      send_data();
-    });
-    $button[1].addEventListener('click',(e) => {
-      confirm_total();
-    });
-    $button[2].addEventListener('click',(e) => {
-      init();
-    });
+
+    if(init_count == 0){
+      $button[0].addEventListener('click',(e) => {
+        confirm_total();
+        //ここに決済関数を
+        send_data();
+      });
+      $button[1].addEventListener('click',(e) => {
+        confirm_total();
+      });
+      $button[2].addEventListener('click',(e) => {
+        init();
+      });
+    }
+
+    init_count +=1;
   };
   
   //会計(入力を反映)
