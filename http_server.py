@@ -5,6 +5,7 @@ from flask import Flask , request
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 CSV_FILE_NAME = "sales_data.csv"
+print("サーバー開始")
 
 def write_csv(filepointer,data,amount):
     if(amount!="0"):
