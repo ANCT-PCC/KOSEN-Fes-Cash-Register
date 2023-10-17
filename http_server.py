@@ -31,7 +31,7 @@ def csv():
                 write_csv(fp_unko,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
         
         if(isfile_res == True):
-            with open(CSV_FILE_NAME,"a") as fp:
+            with open(CSV_FILE_NAME,"a",encoding="UTF-8") as fp:
                 write_csv(fp,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
 
 
