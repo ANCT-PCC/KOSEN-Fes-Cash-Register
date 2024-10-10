@@ -1,20 +1,16 @@
 //商品情報の定義
 const iteminfo = [
     {
-      name: "キーホルダーA",
-      price: "250",
-    },
-    {
-      name: "キーホルダーB",
+      name: "キーホルダー大",
       price: "300",
     },
     {
-      name: "オリジナルカップ",
-      price: "600",
+      name: "キーホルダー小",
+      price: "200",
     },
     {
-      name: "オリジナルゲーム体験",
-      price: "0",
+      name: "オリジナルカップ",
+      price: "500",
     }
   ];
 
@@ -33,21 +29,79 @@ const iteminfo = [
   const $button = document.querySelectorAll('.btn');
 
   var init_count = 0;
+  var new_item_title_element = null;
+  var new_item_price_element = null;
+  var new_item_subtotal_element = null;
+  var new_label_price_element = null;
+  var new_label_quantity_element = null;
+  const new_br_element = document.createElement('br');
+
+  var prev_element = null;
 
   const init = () => {
-    for(flag = 0;flag<4;flag++){
-      var identify = flag+1;
-      subtotals[flag] = document.getElementById('subtotal'+identify);
-      subtotals[flag].placeholder = '0';
+    for(flag = 0;flag<iteminfo.length;flag++){
+      //商品名
+      new_item_title_element = document.createElement('h3');
+      new_item_title_element.textContent = iteminfo[flag].name;
+      new_item_title_element.id = 'item_title'+String(flag);
 
-      item_price[flag] = document.getElementById('unitp'+identify);
-      item_price[flag].placeholder = iteminfo[flag].price;
+      //単価
+      new_label_price_element = document.createElement('label');
+      new_label_price_element.textContent = '単価';
+      new_item_price_element = document.createElement('input');
+      new_item_price_element.className = 'form-control';
+      new_item_price_element.type = 'text';
+      new_item_price_element.value = iteminfo[flag].price;
 
-      item_name[flag] = document.getElementById('item'+identify);
-      item_name[flag].textContent = iteminfo[flag].name;
+      //数量
+      new_label_quantity_element = document.createElement('label');
+      new_label_quantity_element.textContent = '数量';
+      new_item_quantity_element = document.createElement('input');
+      new_item_quantity_element.className = 'form-control';
+      new_item_quantity_element.type = 'number';
+      new_item_quantity_element.value = '0';
 
-      item_quantity[flag] = document.getElementById('quantity'+identify);
-      item_quantity[flag].value = '0';
+      //小計
+      new_label_subtotal_element = document.createElement('label');
+      new_label_subtotal_element.textContent = '小計';
+      new_item_subtotal_element = document.createElement('input');
+      new_item_subtotal_element.className = 'form-control';
+      new_item_subtotal_element.type = 'text';
+      new_item_subtotal_element.placeholder = '0';
+
+      //divその2
+      new_div_element2 = document.createElement('div');
+      new_div_element2.appendChild(new_label_quantity_element);
+      new_div_element2.appendChild(new_item_quantity_element);
+
+      //divその1
+      new_div_element = document.createElement('div');
+      new_div_element.appendChild(new_label_price_element);
+      new_div_element.appendChild(new_item_price_element);
+      new_div_element.appendChild(new_div_element2);
+      new_div_element.appendChild(new_br_element);
+      new_div_element.appendChild(new_br_element);
+      new_div_element.appendChild(new_label_subtotal_element);
+      new_div_element.appendChild(new_item_subtotal_element);
+
+      //div1にdiv2をぶち込む
+      new_div_element.appendChild(new_div_element2);
+
+      if (flag == 0){
+        //site_titleの後ろにぶち込む
+        prev_element = document.getElementById('site_title');
+        prev_element.after(new_item_title_element);
+        prev_element = document.getElementById('item_title'+String(flag));
+        //div1をぶち込む
+        prev_element.after(new_div_element);
+      }else{
+        prev_element = document.getElementById('item_title'+String(flag - 1));
+        prev_element.after(new_item_title_element);
+        prev_element = document.getElementById('item_title'+String(flag));
+        //div1をぶち込む
+        prev_element.after(new_div_element);
+      }
+
     }
 
     total_price = document.getElementById('total');
