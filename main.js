@@ -37,6 +37,7 @@ const iteminfo = [
   const new_br_element = document.createElement('br');
 
   var prev_element = null;
+  var subtotal_position = null;
 
   const init = () => {
     for(flag = 0;flag<iteminfo.length;flag++){
@@ -48,44 +49,53 @@ const iteminfo = [
       //単価
       new_label_price_element = document.createElement('label');
       new_label_price_element.textContent = '単価';
+      new_label_price_element.className = 'm-1';
       new_item_price_element = document.createElement('input');
       new_item_price_element.className = 'form-control';
       new_item_price_element.type = 'text';
+      new_item_price_element.ariaLabel = "Disabled input example";
+      new_item_price_element.disabled = true;
       new_item_price_element.value = iteminfo[flag].price;
 
       //数量
-      new_label_quantity_element = document.createElement('label');
+      new_label_quantity_element = document.createElement('span');
       new_label_quantity_element.textContent = '数量';
+      new_label_quantity_element.className = "input-group-text"
       new_item_quantity_element = document.createElement('input');
       new_item_quantity_element.className = 'form-control';
+      new_item_quantity_element.id = 'item_quantity'+String(flag);
       new_item_quantity_element.type = 'number';
       new_item_quantity_element.value = '0';
 
       //小計
       new_label_subtotal_element = document.createElement('label');
       new_label_subtotal_element.textContent = '小計';
+      new_label_subtotal_element.id = 'label_subtotal'+String(flag);
       new_item_subtotal_element = document.createElement('input');
+      new_item_subtotal_element.id = 'subtotal'+String(flag);
       new_item_subtotal_element.className = 'form-control';
+      new_item_subtotal_element.disabled = true;
+      new_item_subtotal_element.ariaLabel = "Disabled input example";
       new_item_subtotal_element.type = 'text';
       new_item_subtotal_element.placeholder = '0';
 
       //divその2
       new_div_element2 = document.createElement('div');
+      new_div_element2.className = 'input-group input-group-lg m-1';
+      new_div_element2.id = 'div2'+String(flag);
       new_div_element2.appendChild(new_label_quantity_element);
       new_div_element2.appendChild(new_item_quantity_element);
 
       //divその1
       new_div_element = document.createElement('div');
+      new_div_element.className = 'd-flex justify-content-center';
+      new_div_element.id = 'main_div'+String(flag);
       new_div_element.appendChild(new_label_price_element);
       new_div_element.appendChild(new_item_price_element);
-      new_div_element.appendChild(new_div_element2);
       new_div_element.appendChild(new_br_element);
       new_div_element.appendChild(new_br_element);
       new_div_element.appendChild(new_label_subtotal_element);
       new_div_element.appendChild(new_item_subtotal_element);
-
-      //div1にdiv2をぶち込む
-      new_div_element.appendChild(new_div_element2);
 
       if (flag == 0){
         //site_titleの後ろにぶち込む
@@ -94,15 +104,28 @@ const iteminfo = [
         prev_element = document.getElementById('item_title'+String(flag));
         //div1をぶち込む
         prev_element.after(new_div_element);
+
+        //div1にdiv2をぶち込む(実際は単価のinput要素の直後にぶち込む)
+        subtotal_position = document.getElementById(new_label_subtotal_element.id);
+        subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
+        
       }else{
-        prev_element = document.getElementById('item_title'+String(flag - 1));
+        prev_element = document.getElementById('main_div'+String(flag - 1));
         prev_element.after(new_item_title_element);
         prev_element = document.getElementById('item_title'+String(flag));
         //div1をぶち込む
         prev_element.after(new_div_element);
+
+        //div1にdiv2をぶち込む
+        subtotal_position = document.getElementById(new_label_subtotal_element.id);
+        subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
       }
 
     }
+
+    //最後に改行を入れる
+    const last_element = document.getElementById(new_div_element.id);
+    last_element.insertAdjacentHTML('afterend','<br><br>');
 
     total_price = document.getElementById('total');
     total_price.value = '0';
@@ -137,10 +160,13 @@ const iteminfo = [
   const confirm_total = () => {
     var n = 0;
     total_price.value = '0';
-    for(flag = 0;flag<4;flag++){
+    for(flag = 0;flag<iteminfo.length;flag++){
       //小計・合計金額を反映
-      subtotals[flag].placeholder = String(Number(iteminfo[flag].price) * Number(item_quantity[flag].value));
-      n += Number(subtotals[flag].placeholder);
+      subtotal = document.getElementById('subtotal'+String(flag));
+      item_quantity = document.getElementById('item_quantity'+String(flag)).value;
+      subtotal.placeholder = String(Number(iteminfo[flag].price) * Number(item_quantity));
+      subtotal.textContent = subtotal.placeholder;
+      n += Number(subtotal.placeholder);
     }
     total_price.value = String(n);
 
