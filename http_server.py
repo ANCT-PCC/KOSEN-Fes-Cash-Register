@@ -3,6 +3,7 @@ import json
 
 from flask import Flask , request
 from flask_cors import CORS
+from datetime import datetime
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
@@ -19,6 +20,7 @@ def index():
 
 @app.route('/csv',methods=['GET','POST'])
 def csv():
+    now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     for flag in range(len(request.json)):
         res = request.json[flag]
         item_name = res['name']
@@ -29,12 +31,12 @@ def csv():
 
         if(isfile_res == False):
             with open(CSV_FILE_NAME,"w",encoding="UTF-8") as fp_unko:
-                fp_unko.write('商品名,個数,小計'+"\n")
-                write_csv(fp_unko,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
+                fp_unko.write('日時,商品名,個数,小計'+"\n")
+                write_csv(fp_unko,f"{now_time},{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
         
         if(isfile_res == True):
             with open(CSV_FILE_NAME,"a",encoding="UTF-8") as fp:
-                write_csv(fp,f"{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
+                write_csv(fp,f"{now_time},{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
 
 
     return "OK"
