@@ -59,6 +59,7 @@ const iteminfo = [
         new_item_price_element.type = 'text';
         new_item_price_element.ariaLabel = "Disabled input example";
         new_item_price_element.disabled = true;
+        new_item_price_element.style.width = "20%";
         new_item_price_element.value = iteminfo[flag].price;
 
         //数量
@@ -82,6 +83,7 @@ const iteminfo = [
         new_item_subtotal_element.ariaLabel = "Disabled input example";
         new_item_subtotal_element.type = 'text';
         new_item_subtotal_element.placeholder = '0';
+        new_item_subtotal_element.style.width = "20%";
 
         //divその2
         new_div_element2 = document.createElement('div');
@@ -89,10 +91,11 @@ const iteminfo = [
         new_div_element2.id = 'div2'+String(flag);
         new_div_element2.appendChild(new_label_quantity_element);
         new_div_element2.appendChild(new_item_quantity_element);
+        new_div_element2.style.width = "20%";
 
         //divその1
         new_div_element = document.createElement('div');
-        new_div_element.className = 'd-flex justify-content-center';
+        new_div_element.className = 'd-flex';
         new_div_element.id = 'main_div'+String(flag);
         new_div_element.appendChild(new_label_price_element);
         new_div_element.appendChild(new_item_price_element);
@@ -148,7 +151,7 @@ const iteminfo = [
 
     //ボタンの定義
     $button[0].textContent = '決済する(csvに記録)';
-    $button[1].textContent = '入力を反映';
+    $button[1].textContent = '金額を確認する';
     $button[2].textContent = '次の会計へ(入力リセット)';
 
     if(init_count == 0){
@@ -180,35 +183,29 @@ const iteminfo = [
       subtotal.textContent = subtotal.placeholder;
       n += Number(subtotal.placeholder);
     }
-    total_price.textContent = String(n)+" 円";
+    const formatNumberWithComma = (number) => {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    total_price.textContent = formatNumberWithComma(n) + " 円";
 
   };
 
   //CSVに記録(PythonのHTTP鯖にPOST)
   const send_data =() => {
     //現在の入力状況を辞書型に格納
-    var origin_data = [
-      {
-        name: String(item_name[0].textContent),
-        amount: String(item_quantity[0].value),
-        subtotal: String(subtotals[0].placeholder)
-      },
-      {
-        name: String(item_name[1].textContent),
-        amount: String(item_quantity[1].value),
-        subtotal: String(subtotals[1].placeholder)
-      },
-      {
-        name: String(item_name[2].textContent),
-        amount: String(item_quantity[2].value),
-        subtotal: String(subtotals[2].placeholder)
-      },
-      {
-        name: String(item_name[3].textContent),
-        amount: String(item_quantity[3].value),
-        subtotal: String(subtotals[3].placeholder)
-      }
-    ];
+    var origin_data = [];
+    var tupple = {};
+    for (flag = 0;flag<iteminfo.length;flag++){
+      tupple = {
+        name: iteminfo[flag].name,
+        amount: String(document.getElementById('item_quantity'+String(flag)).value),
+        subtotal: String(document.getElementById('subtotal'+String(flag)).placeholder)
+      };
+      origin_data.push(tupple);
+      console.log(origin_data);
+      console.log(tupple);
+    }
 
     //通信開始
     $.ajax(

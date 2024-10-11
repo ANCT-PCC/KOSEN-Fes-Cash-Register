@@ -17,7 +17,8 @@ def index():
 
 @app.route('/csv',methods=['GET','POST'])
 def csv():
-    for flag in range(4):
+    print(type(request.json))
+    for flag in range(len(request.json)):
         res = request.json[flag]
         item_name = res['name']
         item_amount = res['amount']
@@ -41,4 +42,4 @@ def csv():
 def test():
     return request.get_data()
 
-app.run(port=8000)
+app.run(port=8000, debug=True)
