@@ -2,7 +2,9 @@ import os
 import json
 
 from flask import Flask , request
+from flask_cors import CORS
 app = Flask(__name__, static_folder='.', static_url_path='')
+CORS(app)
 
 CSV_FILE_NAME = "sales_data.csv"
 print("サーバー開始")
@@ -17,7 +19,6 @@ def index():
 
 @app.route('/csv',methods=['GET','POST'])
 def csv():
-    print(type(request.json))
     for flag in range(len(request.json)):
         res = request.json[flag]
         item_name = res['name']

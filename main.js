@@ -203,8 +203,6 @@ const iteminfo = [
         subtotal: String(document.getElementById('subtotal'+String(flag)).placeholder)
       };
       origin_data.push(tupple);
-      console.log(origin_data);
-      console.log(tupple);
     }
 
     //通信開始
