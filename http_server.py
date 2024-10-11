@@ -18,6 +18,10 @@ def write_csv(filepointer,data,amount):
 def index():
     return app.send_static_file('main.html')
 
+@app.route('/display',methods=['GET'])
+def display():
+    return app.send_static_file('display.html')
+
 @app.route('/csv',methods=['GET','POST'])
 def csv():
     now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
