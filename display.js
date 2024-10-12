@@ -2,16 +2,16 @@
 //未来の俺、まあ自動取得できるようにやっといてくれ
 var iteminfo = [
     {
-      name: "キーホルダー大",
-      price: "300",
+      name: 'キーホルダー大',
+      price: '300',
     },
     {
-      name: "キーホルダー小",
-      price: "200",
+      name: 'キーホルダー小',
+      price: '200',
     },
     {
-      name: "オリジナルカップ",
-      price: "500",
+      name: 'オリジナルカップ',
+      price: '500',
     }
   ];
 
@@ -45,32 +45,20 @@ var iteminfo = [
       if(init_count == 0){
         //商品名
         new_item_title_element = document.createElement('h3');
-        new_item_title_element.textContent = iteminfo[flag].name;
+        new_item_title_element.textContent = iteminfo[flag].name+" ("+iteminfo[flag].price+"円)";
         new_item_title_element.id = 'item_title'+String(flag);
-        new_item_title_element.style.fontWeight = "bold";
-        new_item_title_element.className = "mt-2";
-
-        //単価
-        new_label_price_element = document.createElement('span');
-        new_label_price_element.textContent = '単価';
-        new_label_price_element.className = 'm-1';
-        new_item_price_element = document.createElement('input');
-        new_item_price_element.className = 'form-control';
-        new_item_price_element.type = 'text';
-        new_item_price_element.ariaLabel = "Disabled input example";
-        new_item_price_element.disabled = true;
-        new_item_price_element.style.width = "20%";
-        new_item_price_element.value = iteminfo[flag].price;
+        new_item_title_element.style.fontWeight = 'bold';
+        new_item_title_element.className = 'mt-2';
 
         //数量
-        new_label_quantity_element = document.createElement('span');
+        new_label_quantity_element = document.createElement('h3');
         new_label_quantity_element.textContent = '数量';
         new_item_quantity_element = document.createElement('input');
         new_item_quantity_element.className = 'form-control';
         new_item_quantity_element.id = 'item_quantity'+String(flag);
         new_item_quantity_element.type = 'text';
         new_item_quantity_element.value = '0';
-        new_item_quantity_element.ariaLabel = "readonly input example"
+        new_item_quantity_element.ariaLabel = 'readonly input example'
 
         //小計
         new_label_subtotal_element = document.createElement('span');
@@ -80,10 +68,10 @@ var iteminfo = [
         new_item_subtotal_element.id = 'subtotal'+String(flag);
         new_item_subtotal_element.className = 'form-control';
         new_item_subtotal_element.disabled = true;
-        new_item_subtotal_element.ariaLabel = "Disabled input example";
+        new_item_subtotal_element.ariaLabel = 'Disabled input example';
         new_item_subtotal_element.type = 'text';
         new_item_subtotal_element.placeholder = '0';
-        new_item_subtotal_element.style.width = "20%";
+        new_item_subtotal_element.style.width = '20%';
 
         //divその2
         new_div_element2 = document.createElement('div');
@@ -91,14 +79,12 @@ var iteminfo = [
         new_div_element2.id = 'div2'+String(flag);
         new_div_element2.appendChild(new_label_quantity_element);
         new_div_element2.appendChild(new_item_quantity_element);
-        new_div_element2.style.width = "20%";
+        new_div_element2.style.width = '20%';
 
         //divその1
         new_div_element = document.createElement('div');
         new_div_element.className = 'd-flex';
         new_div_element.id = 'main_div'+String(flag);
-        new_div_element.appendChild(new_label_price_element);
-        new_div_element.appendChild(new_item_price_element);
         new_div_element.appendChild(new_br_element);
         new_div_element.appendChild(new_br_element);
         new_div_element.appendChild(new_label_subtotal_element);
@@ -128,9 +114,9 @@ var iteminfo = [
           subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
         }
       }else{
-        document.getElementById('item_quantity'+String(flag)).value = "0";
-        document.getElementById('subtotal'+String(flag)).placeholder = "0";
-        document.getElementById('total').textContent = "0 円";
+        document.getElementById('item_quantity'+String(flag)).value = '0';
+        document.getElementById('subtotal'+String(flag)).placeholder = '0';
+        document.getElementById('total').textContent = '0 円';
       }
 
       is_placed = true;
@@ -147,9 +133,9 @@ var iteminfo = [
 
     //桁のカンマのあれ
     const formatNumberWithComma = (number) => {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
-    total_price.textContent = formatNumberWithComma(n) + " 円";
+    total_price.textContent = formatNumberWithComma(n) + ' 円';
 
   };
   
