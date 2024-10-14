@@ -12,14 +12,28 @@
   </head>
   <body class="p-3 m-0 border-0 bd-example">
 
-    <img src="static/5000choyen.png" id="site_title" style="height: 30%; width: 30%;">
+    <img src="static/5000choyen.png" id="site_title" style="height: 20%; width: 20%;">
 
-    <p id="inputGroup-sizing-lg" style="font-size: 300%;">お支払い金額:</p>
-    <p id="total" style="font-size: 400%;" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">合計金額</p>
+    <div class="row">
+      <div class="col">
+        <p id="inputGroup-sizing-lg" style="font-size: 300%;">お会計金額:</p>
+        <p id="total" style="font-size: 400%;" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">合計金額</p>
+      </div>
+      <div class="col">
+        <p id="inputGroup-sizing-lg" style="font-size: 300%;" class="ml-5">おつり:</p>
+        <p id="change" style="font-size: 400%;" type="text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">合計金額</p>
+      </div>
+    </div>
+    
+    <div class="d-flex" id="money_number_div">
+    </div>
+    
 
     <button type="button" class="btn btn-primary">Primary</button>
     <button type="button" class="btn btn-secondary">Secondary</button>
     <button type="button" class="btn btn-secondary">Secondary</button>
+    <br>
+    <button type="button" class="btn btn-secondary mt-3">Secondary</button>
     <br>
     <div id="send_data_status" class="alert alert-success" role="alert">
       A simple success alert—check it out!

@@ -51,8 +51,9 @@ var iteminfo = [
         new_item_title_element.className = 'mt-2';
 
         //数量
-        new_label_quantity_element = document.createElement('h3');
+        new_label_quantity_element = document.createElement('span');
         new_label_quantity_element.textContent = '数量';
+        new_label_quantity_element.className = 'input-group-text';
         new_item_quantity_element = document.createElement('input');
         new_item_quantity_element.className = 'form-control';
         new_item_quantity_element.id = 'item_quantity'+String(flag);
@@ -63,14 +64,14 @@ var iteminfo = [
         //小計
         new_label_subtotal_element = document.createElement('span');
         new_label_subtotal_element.textContent = '小計';
+        new_label_subtotal_element.className = 'input-group-text';
         new_label_subtotal_element.id = 'label_subtotal'+String(flag);
         new_item_subtotal_element = document.createElement('input');
         new_item_subtotal_element.id = 'subtotal'+String(flag);
         new_item_subtotal_element.className = 'form-control';
-        new_item_subtotal_element.disabled = true;
-        new_item_subtotal_element.ariaLabel = 'Disabled input example';
+        new_item_subtotal_element.ariaLabel = 'readonly input example';
         new_item_subtotal_element.type = 'text';
-        new_item_subtotal_element.placeholder = '0';
+        new_item_subtotal_element.value = '0';
         new_item_subtotal_element.style.width = '20%';
 
         //divその2
@@ -81,14 +82,23 @@ var iteminfo = [
         new_div_element2.appendChild(new_item_quantity_element);
         new_div_element2.style.width = '20%';
 
+        //divその2-1
+        new_div_element2_1 = document.createElement('div');
+        new_div_element2_1.className = 'input-group input-group-lg m-1';
+        new_div_element2_1.id = 'div2_1'+String(flag);
+        new_div_element2_1.appendChild(new_label_subtotal_element);
+        new_div_element2_1.appendChild(new_item_subtotal_element);
+        new_div_element2_1.style.width = '20%';
+
         //divその1
         new_div_element = document.createElement('div');
-        new_div_element.className = 'd-flex';
+        new_div_element.className = 'd-flex input-group input-group-lg m-1';
         new_div_element.id = 'main_div'+String(flag);
         new_div_element.appendChild(new_br_element);
         new_div_element.appendChild(new_br_element);
-        new_div_element.appendChild(new_label_subtotal_element);
-        new_div_element.appendChild(new_item_subtotal_element);
+        new_div_element.appendChild(new_div_element2);
+        new_div_element.appendChild(new_div_element2_1);
+        //new_div_element.appendChild(new_item_subtotal_element);
 
         if (flag == 0){
           //site_titleの後ろにぶち込む
@@ -99,8 +109,8 @@ var iteminfo = [
           prev_element.after(new_div_element);
 
           //div1にdiv2をぶち込む(実際は単価のinput要素の直後にぶち込む)
-          subtotal_position = document.getElementById(new_label_subtotal_element.id);
-          subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
+          //subtotal_position = document.getElementById(new_label_subtotal_element.id);
+          //subtotal_position.parentNode.insertBefore(new_div_element2_1,subtotal_position);
           
         }else{
           prev_element = document.getElementById('main_div'+String(flag - 1));
@@ -110,8 +120,8 @@ var iteminfo = [
           prev_element.after(new_div_element);
 
           //div1にdiv2をぶち込む
-          subtotal_position = document.getElementById(new_label_subtotal_element.id);
-          subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
+          //subtotal_position = document.getElementById(new_label_subtotal_element.id);
+          //subtotal_position.parentNode.insertBefore(new_div_element2,subtotal_position);
         }
       }else{
         document.getElementById('item_quantity'+String(flag)).value = '0';
@@ -128,15 +138,49 @@ var iteminfo = [
       last_element.insertAdjacentHTML('afterend','<br><br>');
     }
 
+    //合計金額
     total_price = document.getElementById('total');
     total_price.textContent = '0 円';
 
-    //桁のカンマのあれ
-    const formatNumberWithComma = (number) => {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    };
-    total_price.textContent = formatNumberWithComma(n) + ' 円';
+    //おあずかり金額
+    const deposit = document.getElementById('deposit');
+    deposit.textContent = '0 円';
+
+    //おつり
+    const change = document.getElementById('change');
+    change.textContent = '0 円';
 
   };
-  
+
+  const connection = io.connect();
+  var total = 0;
+  var n = 0;
+
+  const formatNumberWithComma = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  connection.on('connect', () => {
+    console.log('connected');
+  });
+  connection.on('disconnect', () => {
+    console.log('disconnected');
+  });
+  connection.on('message', (data) => {
+    item_data = data['data'];
+    total = 0;
+
+    if(item_data[0]['name'] == 'all_zero'){
+      location.reload(); //再読み込みでページリセット
+    }else{
+      for(i=0;i<item_data.length;i++){
+        
+        document.getElementById('item_quantity'+String(i)).value = item_data[i]['amount'];
+        document.getElementById('subtotal'+String(i)).value = String(Number(item_data[i]['amount']) * Number(iteminfo[i]['price']));
+        //console.log(String(Number(item_data[i]['amount']) * Number(iteminfo[i]['price'])))
+        total += Number(item_data[i]['subtotal']);
+        document.getElementById('total').textContent = formatNumberWithComma(total) + ' 円';
+    }
+    }});
+
   init();
