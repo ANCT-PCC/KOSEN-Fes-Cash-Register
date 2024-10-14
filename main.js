@@ -73,7 +73,8 @@ const iteminfo = [
         new_item_quantity_element.id = 'item_quantity'+String(flag);
         new_item_quantity_element.type = 'number';
         new_item_quantity_element.value = '0';
-        new_item_quantity_element.min = '0';
+        new_item_quantity_element.min = '0'; //なんでかわからんけど、最小値指定しても0未満を入力できてしまう。うんち
+        //console.log(new_label_quantity_element.min);
         
 
         //小計
@@ -142,7 +143,7 @@ const iteminfo = [
         document.getElementById('subtotal'+String(flag)).placeholder = "0";
         document.getElementById('total').textContent = "0 円";
         document.getElementById('change').textContent = "0 円";
-        document.getElementById('deposit').value = "";
+        document.getElementById('deposit').value = "0";
       }
 
       //お預かり金額の入力欄
@@ -157,7 +158,7 @@ const iteminfo = [
         deposit_element.className = 'form-control';
         deposit_element.id = 'deposit';
         deposit_element.type = 'number';
-        deposit_element.value = '';
+        deposit_element.value = '0';
         new_div_element4 = document.createElement('div');
         new_div_element4.className = 'input-group input-group-lg m-1';
         new_div_element4.id = 'div4';
@@ -166,6 +167,21 @@ const iteminfo = [
         new_div_element4.style.width = "30%";
         document.getElementById('money_number_div').after(new_div_element3);
         document.getElementById('deposit_div').appendChild(new_div_element4);
+
+        //お預かり金額のマウスホイールによる変更
+        deposit_element.addEventListener('wheel',(e) => {
+          e.preventDefault();
+          if(e.deltaY > 0){
+            if(Number(document.getElementById(e.target.id).value) == 0){
+              document.getElementById(e.target.id).value = '0'; //0未満にならないように。ホイールで数値を設定するとき限定の機能。(暫定)
+            }else{
+              document.getElementById(e.target.id).value = String(Number(document.getElementById(e.target.id).value) - 10);
+            }
+          }else{
+            document.getElementById(e.target.id).value = String(Number(document.getElementById(e.target.id).value) + 10);
+          }
+          //confirm_total();
+        });
       }
     }
 
@@ -175,7 +191,11 @@ const iteminfo = [
         document.getElementById('item_quantity'+String(flag)).addEventListener('wheel',(e) => {
           e.preventDefault();
           if(e.deltaY > 0){
-            document.getElementById(e.target.id).value = String(Number(document.getElementById(e.target.id).value) - 1);
+            if(Number(document.getElementById(e.target.id).value) == 0){
+              document.getElementById(e.target.id).value = '0'; //0未満にならないように。ホイールで数値を設定するとき限定の機能。(暫定)
+            }else{
+              document.getElementById(e.target.id).value = String(Number(document.getElementById(e.target.id).value) - 1);
+            }
           }else{
             document.getElementById(e.target.id).value = String(Number(document.getElementById(e.target.id).value) + 1);
           }
@@ -195,19 +215,19 @@ const iteminfo = [
     send_data_status_error.style.visibility = "hidden";
 
     //ボタンの定義
-    $button[0].textContent = '決済する(csvに記録)';
-    $button[1].textContent = '金額を確認する';
-    $button[2].textContent = '次の会計へ(入力リセット)';
-    $button[3].textContent = 'お客様画面を表示する(新しいタブが開きます)';
+    $button[0].textContent = '1 金額を提示する';
+    $button[1].textContent = '2 おつりを表示(お預かり金額を入力してから押す)';
+    $button[2].textContent = '3 会計を記録する';
+    $button[3].textContent = '4 次の会計へ進む(画面をリセット)';
 
     if(init_count == 0){
       $button[0].addEventListener('click',(e) => {
-        confirm_total();
+        confirm_total(be_given=false);
         //ここに決済関数を
         send_data(no_write=false);
       });
       $button[1].addEventListener('click',(e) => {
-        confirm_total();
+        confirm_total(be_given=false);
         send_data(no_write=true);
       });
       $button[2].addEventListener('click',(e) => {
@@ -239,8 +259,9 @@ const iteminfo = [
   };
   
   //会計(入力を反映)
-  const confirm_total = () => {
+  const confirm_total = (be_given) => {
     var n = 0;
+    var m = 0;
     total_price.value = '0 円';
     for(flag = 0;flag<iteminfo.length;flag++){
       //小計・合計金額を反映
@@ -253,8 +274,11 @@ const iteminfo = [
     const formatNumberWithComma = (number) => {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-
+    m = Number(document.getElementById('deposit').value) - n;
     total_price.textContent = formatNumberWithComma(n) + " 円";
+    if(be_given == true){
+      change_price.textContent = formatNumberWithComma(m) + " 円";
+    }
   };
 
   //CSVに記録(PythonのHTTP鯖にPOST)
