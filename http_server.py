@@ -11,7 +11,6 @@ CORS(app)
 
 CSV_FILE_NAME = "sales_data.csv"
 display_data = []
-print("サーバー開始")
 
 def write_csv(filepointer,data,amount):
     if(amount!="0"):
@@ -32,7 +31,7 @@ def display():
 def csv():
     now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(request.json)
-    for flag in range(len(request.json)):
+    for flag in range(len(request.json) - 1):
         res = request.json[flag]
         item_name = res['name']
         item_amount = res['amount']
@@ -50,7 +49,7 @@ def csv():
             with open(CSV_FILE_NAME,"a",encoding="UTF-8") as fp:
                 write_csv(fp,f"{now_time},{item_name},{item_amount},{item_subtotal}"+"\n",item_amount)
 
-    socketio.emit('message', {'data': display_data})
+    #socketio.emit('message', {'data': display_data})
     display_data.clear()
     return "OK",200
 
@@ -77,4 +76,8 @@ def register(data):
 def test():
     return request.get_data()
 
-socketio.run(app,port=8000, debug=True)
+print("サーバー起動")
+print("############################################")
+print("ブラウザで http://localhost:8000/ にアクセスしてください")
+print("############################################")
+socketio.run(app,port=8000, debug=False)

@@ -166,21 +166,31 @@ var iteminfo = [
   connection.on('disconnect', () => {
     console.log('disconnected');
   });
+  var be_given = null;
   connection.on('message', (data) => {
     item_data = data['data'];
     total = 0;
+    console.log("受け取った！")
 
     if(item_data[0]['name'] == 'all_zero'){
       location.reload(); //再読み込みでページリセット
     }else{
-      for(i=0;i<item_data.length;i++){
+      for(i=0;i<item_data.length-1;i++){
         
         document.getElementById('item_quantity'+String(i)).value = item_data[i]['amount'];
-        document.getElementById('subtotal'+String(i)).value = String(Number(item_data[i]['amount']) * Number(iteminfo[i]['price']));
+        document.getElementById('subtotal'+String(i)).value = String(formatNumberWithComma(Number(item_data[i]['amount']) * Number(iteminfo[i]['price'])));
         //console.log(String(Number(item_data[i]['amount']) * Number(iteminfo[i]['price'])))
         total += Number(item_data[i]['subtotal']);
         document.getElementById('total').textContent = formatNumberWithComma(total) + ' 円';
-    }
+        
+      }
+      console.log(item_data[item_data.length -1]);
+      //お預かりとおつり
+      if(item_data[item_data.length -1]['be_given'] == 'true'){
+        document.getElementById('deposit').textContent = formatNumberWithComma(Number(item_data[item_data.length -1]['deposit'])) + ' 円';
+        change_number = Number(item_data[item_data.length -1]['deposit']) - total;
+        document.getElementById('change').textContent = formatNumberWithComma(change_number) + ' 円';
+      }
     }});
 
   init();
