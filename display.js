@@ -88,7 +88,7 @@ var iteminfo = [
         new_div_element2_1.id = 'div2_1'+String(flag);
         new_div_element2_1.appendChild(new_label_subtotal_element);
         new_div_element2_1.appendChild(new_item_subtotal_element);
-        new_div_element2_1.style.width = '20%';
+        new_div_element2_1.style.width = '30%';
 
         //divその1
         new_div_element = document.createElement('div');
