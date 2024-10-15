@@ -44,9 +44,12 @@ const iteminfo = [
   var prev_element = null;
   var subtotal_position = null;
 
+  //サウンド関連の変数
   var sound_1 = null;
   var sound_2 = null;
   var sound_3 = null;
+  var is_first_sound_thanks = false;
+  var is_first_sound_confirm_money = true;
 
   //数字にカンマを入れるやつ
   const formatNumberWithComma = (number) => {
@@ -57,6 +60,9 @@ const iteminfo = [
     n=0;
     m=0;
     is_confirmed = false;
+    //stopped_sound = false;
+    is_first_sound_confirm_money = true;
+    is_first_sound_thanks = true;
     for(flag = 0;flag<iteminfo.length;flag++){
       if(init_count == 0){
         //商品名
@@ -238,18 +244,24 @@ const iteminfo = [
     $button[3].textContent = '4 次の会計へ進む(画面をリセット)';
     $button[4].textContent = 'お客様画面を開く';
 
-    var subtotal_num = 0;
+    //var subtotal_num = 0;
+    
 
     if(init_count == 0){
       $button[0].addEventListener('click',(e) => {
         confirm_total(be_given=false,phase=1);
         send_data(no_write=true,be_given=false);
-        sound_1 = new Audio('static/voices/confirm_number.mp3');
-        sound_1.play();
-        sound_1.addEventListener('ended',function(){
-          sound_2 = new Audio('static/voices/attention.mp3');
-          sound_2.play();
-        });
+        if(is_first_sound_confirm_money == true){
+          is_first_sound_confirm_money = false;
+          sound_1 = new Audio('static/voices/confirm_number.mp3');
+          sound_1.play();
+          sound_1.addEventListener('ended',function(){
+            //stopped_sound = true;
+            sound_2 = new Audio('static/voices/attention.mp3');
+            sound_2.play();
+          });
+        }
+        
       });
       $button[1].addEventListener('click',(e) => {
         confirm_total(be_given=true,phase=2);
@@ -259,8 +271,11 @@ const iteminfo = [
         //confirm_total(be_given=false,phase=3);
         //ここに決済関数を
         send_data(no_write=false,be_given=true);
-        sound_3 = new Audio('static/voices/thanks.mp3');
-        sound_3.play();
+        if(is_first_sound_thanks == true){
+          is_first_sound_thanks = false;
+          sound_3 = new Audio('static/voices/thanks.mp3');
+          sound_3.play();
+        }
         
       });
       $button[3].addEventListener('click',(e) => {
@@ -294,6 +309,7 @@ const iteminfo = [
   var is_confirmed = false;
   //会計(入力を反映)
   const confirm_total = (be_given,phase) => {
+    n=0;
     if(phase == 1){
       total_price.value = '0 円';
       for(flag = 0;flag<iteminfo.length;flag++){
