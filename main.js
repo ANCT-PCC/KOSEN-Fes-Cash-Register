@@ -309,8 +309,9 @@ const iteminfo = [
   var is_confirmed = false;
   //会計(入力を反映)
   const confirm_total = (be_given,phase) => {
-    n=0;
+    
     if(phase == 1){
+      n=0;
       total_price.value = '0 円';
       for(flag = 0;flag<iteminfo.length;flag++){
         //小計・合計金額を反映
